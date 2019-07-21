@@ -1,0 +1,29 @@
+{
+  "name": "three3d-play",
+  "version": "1.0.0",
+  "description": "three.js + typescript",
+  "scripts": {
+    "start": "webpack-dev-server --host 0.0.0.0",
+    "build": "webpack --env.prod"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "latest",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "latest",
+    "typescript": "latest",
+    "awesome-typescript-loader": "latest",
+    "css-loader": "latest",
+    "raw-loader": "latest",
+    "glslify-loader": "latest",
+    "json-loader": "latest",
+    "style-loader": "latest",
+    "html-webpack-plugin": "latest",
+    "copy-webpack-plugin": "latest"
+  },
+  "dependencies": {
+    "@types/three": "latest",
+    "three": "latest"
+  }
+}
