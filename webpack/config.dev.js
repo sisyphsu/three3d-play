@@ -36,6 +36,11 @@ module.exports = {
                 test: /\.(glsl|vs|fs|vert|frag)$/,
                 use: ['raw-loader', 'glslify-loader']
             },
+            {
+                test: /\.(jpe?g|png|gif|svg|tga|gltf|babylon|mtl|pcb|pcd|prwm|obj|mat|mp3|ogg|glb|ico|eot|otf|webp|ttf|woff|woff2)$/i,
+                use: 'file-loader',
+                exclude: relativePath('node_modules')
+            },
 
             // 必须让TS加载js文件, 因为个别min.js文件需要与d.ts绑定，把TS和JS的loader分开的话就会报错
             {

@@ -21,14 +21,34 @@ interface Resolver<T> {
 }
 
 /**
+ * 资源模型
+ */
+class Resource<T> {
+
+    t: T;
+    promise: Promise<T>;
+
+    constructor(promise: Promise<T>) {
+        promise.then(t => {
+            this.t = t;
+        });
+        this.promise = promise;
+    }
+
+    get(): T {
+        return this.t;
+    }
+}
+
+/**
  * 资源加载器
  */
 class Loader {
 
     private readonly resolvers = new Array<Resolver<any>>();
     private readonly resolverIdx = new Map<String, Resolver<any>>();
-    private readonly promises = new Array<Promise<any>>();
-    private readonly promiseMap = new Map<String, Promise<any>>();
+    private readonly resources = new Array<Resource<any>>();
+    private readonly resourceMap = new Map<String, Resource<any>>();
 
     constructor() {
         this.resolvers.push(
@@ -47,7 +67,7 @@ class Loader {
      * 加载gltf资源
      * @param url 模型路径
      */
-    public loadGLTF(url: string): Promise<GLTF> {
+    public loadGLTF(url: string): Resource<GLTF> {
         return this.load(url, 'gltf');
     }
 
@@ -55,7 +75,7 @@ class Loader {
      * 加载图片资源
      * @param url 图片路径
      */
-    public loadImage(url: string): Promise<HTMLImageElement> {
+    public loadImage(url: string): Resource<HTMLImageElement> {
         return this.load(url, 'image');
     }
 
@@ -63,7 +83,7 @@ class Loader {
      * 加载素材资源
      * @param url 素材路径
      */
-    public loadTexture(url: string): Promise<Texture> {
+    public loadTexture(url: string): Resource<Texture> {
         return this.load(url, 'texture');
     }
 
@@ -72,22 +92,23 @@ class Loader {
      * @param url 资源地址
      * @param type 资源类型
      */
-    public load(url: string, type?: string): Promise<any> {
+    public load(url: string, type?: string): Resource<any> {
         if (!type) {
             let parts = url.split('.');
             type = parts[parts.length - 1];
         }
-        let resolver = this.resolverIdx.get(type);
+        let resolver = this.resolverIdx[type];
         if (!resolver) {
             throw 'unsupport type: ' + type;
         }
-        let promise = this.promiseMap[url];
-        if (promise)
-            return promise;
-        promise = resolver.resolve({url});
-        this.promises.push(promise);
-        this.promiseMap[url] = promise;
-        return promise;
+        let res: Resource<any> = this.resourceMap[url];
+        if (res)
+            return res;
+
+        res = new Resource(resolver.resolve({url}));
+        this.resources.push(res);
+        this.resourceMap[url] = res;
+        return res;
     }
 
     /**
@@ -96,7 +117,9 @@ class Loader {
      * @param fail
      */
     public done(succ: () => void, fail?: (e: Error) => void) {
-        Promise.all(this.promises)
+        let promises = new Array<Promise<any>>();
+        this.resources.forEach(ref => promises.push(ref.promise));
+        Promise.all(promises)
             .then(() => succ())
             .catch(reason => fail && fail(reason));
     }

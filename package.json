@@ -19,6 +19,7 @@
     "copy-webpack-plugin": "latest",
     "babel-loader": "^8.0.4",
     "css-loader": "latest",
+    "file-loader": "latest",
     "glslify-loader": "latest",
     "html-webpack-plugin": "latest",
     "json-loader": "latest",

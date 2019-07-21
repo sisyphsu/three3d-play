@@ -11,6 +11,7 @@ import {
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 import Loader from './loader/Loader';
+import Tower from "./objects/tower/Tower";
 
 // 初始化渲染器
 let renderer = new WebGLRenderer();
@@ -59,6 +60,7 @@ function animate() {
 }
 
 Loader.done(() => {
+    scene.add(new Tower());
     requestAnimationFrame(animate);
 });
 
