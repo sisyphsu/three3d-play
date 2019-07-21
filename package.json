@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "three.js + typescript",
   "scripts": {
-    "start": "webpack-dev-server --host 0.0.0.0",
-    "build": "webpack --env.prod"
+    "start": "webpack-dev-server --host 0.0.0.0 --config webpack/config.dev.js",
+    "build": "webpack --env.prod --config webpack/config.dev.js --colors"
   },
   "keywords": [],
   "license": "MIT",
@@ -30,7 +30,6 @@
     "webpack-dev-server": "latest"
   },
   "dependencies": {
-    "@types/three": "latest",
-    "three": "latest"
+    "three": "^0.106.2"
   }
 }
