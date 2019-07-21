@@ -30,9 +30,30 @@ module.exports = {
                 test: /\.(glsl|vs|fs|vert|frag)$/,
                 use: ['raw-loader', 'glslify-loader']
             },
+
+            // 必须让TS加载js文件, 因为个别min.js文件需要与d.ts绑定，把TS和JS的loader分开的话就会报错
             {
-                test: /\.ts$/,
-                use: 'awesome-typescript-loader'
+                test: /\.(ts|js)$/,
+                include: Path.resolve(__dirname, 'src'),
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        babelrc: false,
+                        cacheDirectory: true,
+                        presets: [
+                            [
+                                "@babel/preset-env",
+                                {targets: {browsers: "last 2 versions"}} // or whatever your project requires
+                            ],
+                            "@babel/preset-typescript"
+                        ],
+                        plugins: [
+                            // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
+                            ["@babel/plugin-proposal-decorators", {legacy: true}],
+                            ["@babel/plugin-proposal-class-properties", {loose: true}]
+                        ]
+                    }
+                }
             }, {
                 test: /\.css$/,
                 exclude: /[\/\\]src[\/\\]/,
