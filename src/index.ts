@@ -1,58 +1,57 @@
-// three.js
-import * as THREE from 'three'
+import {
+    BoxGeometry,
+    DirectionalLight,
+    Mesh,
+    MeshBasicMaterial,
+    PerspectiveCamera,
+    PointLight,
+    Scene,
+    WebGLRenderer
+} from "three";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
-// create the scene
-let scene = new THREE.Scene();
-
-// create the camera
-let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-let renderer = new THREE.WebGLRenderer();
-
-// set size
+// 初始化渲染器
+let renderer = new WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-
-// add canvas to dom
 document.body.appendChild(renderer.domElement);
 
-// add axis to the scene
-let axis = new THREE.AxesHelper(10);
+// 初始化场景
+let scene = new Scene();
 
-scene.add(axis);
-
-// add lights
-let light = new THREE.DirectionalLight(0xffffff, 1.0);
-
-light.position.set(100, 100, 100);
-
-scene.add(light);
-
-let light2 = new THREE.DirectionalLight(0xffffff, 1.0);
-
-light2.position.set(-100, 100, -100);
-
-scene.add(light2);
-
-let material = new THREE.MeshBasicMaterial({
-    color: 0xaaaaaa,
-    wireframe: true
-});
-
-// create a box and add it to the scene
-let box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
-
-scene.add(box);
-
-box.position.x = 0.5;
-box.rotation.y = 0.5;
-
+// 初始化镜头
+let camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.x = 5;
 camera.position.y = 5;
 camera.position.z = 5;
 
+
+// 初始化轨道控制
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.15;
+
+// 添加平行光源
+let light = new DirectionalLight(0xffffff, 1.0);
+light.position.set(100, 100, 100);
+scene.add(light);
+
+// 添加点光源
+const frontLight = new PointLight(0xFFFFFF, 1);
+scene.add(frontLight);
+frontLight.position.set(100, 100, 100);
+
+// 场景中添加立方体
+let box = new Mesh(new BoxGeometry(1, 1, 1), new MeshBasicMaterial({
+    color: 0xaaaaaa,
+    wireframe: true
+}));
+box.position.x = 0.5;
+box.rotation.y = 0.5;
+scene.add(box);
+
 camera.lookAt(scene.position);
 
-function animate(): void {
+function animate() {
     requestAnimationFrame(animate);
     render()
 }
