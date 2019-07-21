@@ -1,8 +1,8 @@
-import GLTFResolver from "loader/resolver/GLTFResolver";
-import ImageResolver from "loader/resolver/ImageResolver";
-import TextureResolver from "loader/resolver/TextureResolver";
 import {Texture} from "three";
 import {GLTF} from "three/examples/jsm/loaders/GLTFLoader";
+import GLTFResolver from "./resolver/GLTFResolver";
+import ImageResolver from "./resolver/ImageResolver";
+import TextureResolver from "./resolver/TextureResolver";
 
 /**
  * 资源解析器
@@ -31,11 +31,11 @@ class Loader {
     private readonly promiseMap = new Map<String, Promise<any>>();
 
     constructor() {
-        this.resolvers = [
+        this.resolvers.push(
             new GLTFResolver(),
             new ImageResolver(),
             new TextureResolver(),
-        ];
+        );
         this.resolverIdx = new Map<String, Resolver<any>>();
         this.resolvers.forEach(resolver => {
             let types = resolver.support();
@@ -95,10 +95,10 @@ class Loader {
      * @param succ
      * @param fail
      */
-    public done(succ: () => void, fail: (e: Error) => void) {
+    public done(succ: () => void, fail?: (e: Error) => void) {
         Promise.all(this.promises)
             .then(() => succ())
-            .catch(reason => fail(reason));
+            .catch(reason => fail && fail(reason));
     }
 
 }
