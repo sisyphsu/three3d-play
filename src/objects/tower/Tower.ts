@@ -10,10 +10,10 @@ export default class Tower extends Object3D {
     constructor() {
         super();
 
-        this.scale.setScalar(2);
-        this.position.z = -30;
-        this.position.x = -30;
-        // this.rotation.y = Math.PI * -0.25;
+        this.scale.setScalar(1);
+        this.position.z = -10;
+        this.position.x = -10;
+        this.position.y = -0.75;
 
         const tower = gltfRes.get();
         this.add(tower.scene);
